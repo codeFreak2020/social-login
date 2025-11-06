@@ -1,0 +1,11 @@
+# Composer dependencies
+/vendor/
+# Composer lockfile is typically ignored in libraries
+/composer.lock
+# PHPUnit cache
+/.phpunit.result.cache
+# OS/editor junk
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

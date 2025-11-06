@@ -1,6 +1,6 @@
 {
   "name": "ravindrasingh0406/social-login",
-  "description": "Framework-agnostic social login package for PHP with multiple providers (Google, GitHub, Facebook, LinkedIn)",
+  "description": "Framework-agnostic social login package for PHP with multiple providers (Google, GitHub)",
   "type": "library",
   "license": "MIT",
   "homepage": "https://github.com/codeFreak2020/social-login",

@@ -7,7 +7,7 @@ A tiny, framework-agnostic PHP library to handle OAuth2 social login with multip
 Require via Composer:
 
 ```bash
-composer require acme/social-login
+composer require ravindrasingh0406/social-login
 ```
 
 > Note: This package depends on `league/oauth2-client` and `guzzlehttp/guzzle`.
@@ -19,7 +19,7 @@ This package supports Laravel Package Auto-Discovery.
 1) Install
 
 ```bash
-composer require acme/social-login
+composer require ravindrasingh0406/social-login
 ```
 
 2) Publish config (optional)
