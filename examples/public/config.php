@@ -47,18 +47,32 @@ if (is_file($root . '/.env')) {
     }
 }
 
+// Unified env getter: prefers getenv(), then $_ENV/$_SERVER to support phpdotenv (which may not call putenv)
+if (!function_exists('envv')) {
+    function envv(string $key, $default = null) {
+        $v = getenv($key);
+        if ($v === false || $v === '') {
+            $v = $_ENV[$key] ?? $_SERVER[$key] ?? null;
+        }
+        if ($v === null || $v === '') {
+            return $default;
+        }
+        return $v;
+    }
+}
+
 return [
     'providers' => [
         'google' => [
-            'client_id' => getenv('SOCIAL_GOOGLE_CLIENT_ID') ?: 'GOOGLE_CLIENT_ID',
-            'client_secret' => getenv('SOCIAL_GOOGLE_CLIENT_SECRET') ?: 'GOOGLE_CLIENT_SECRET',
-            'redirect_uri' => getenv('SOCIAL_GOOGLE_REDIRECT_URI') ?: 'http://localhost:8000/callback.php?provider=google',
+            'client_id' => envv('SOCIAL_GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_ID'),
+            'client_secret' => envv('SOCIAL_GOOGLE_CLIENT_SECRET', 'GOOGLE_CLIENT_SECRET'),
+            'redirect_uri' => envv('SOCIAL_GOOGLE_REDIRECT_URI', 'http://localhost:8000/callback.php?provider=google'),
             // Optional: 'scopes' => ['openid','email','profile'],
         ],
         'github' => [
-            'client_id' => getenv('SOCIAL_GITHUB_CLIENT_ID') ?: 'GITHUB_CLIENT_ID',
-            'client_secret' => getenv('SOCIAL_GITHUB_CLIENT_SECRET') ?: 'GITHUB_CLIENT_SECRET',
-            'redirect_uri' => getenv('SOCIAL_GITHUB_REDIRECT_URI') ?: 'http://localhost:8000/callback.php?provider=github',
+            'client_id' => envv('SOCIAL_GITHUB_CLIENT_ID', 'GITHUB_CLIENT_ID'),
+            'client_secret' => envv('SOCIAL_GITHUB_CLIENT_SECRET', 'GITHUB_CLIENT_SECRET'),
+            'redirect_uri' => envv('SOCIAL_GITHUB_REDIRECT_URI', 'http://localhost:8000/callback.php?provider=github'),
             // Optional: 'scopes' => ['read:user','user:email'],
         ],
     ],
