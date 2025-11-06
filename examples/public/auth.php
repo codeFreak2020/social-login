@@ -20,6 +20,7 @@ try {
     if (isset($_GET['debug'])) {
         header('Content-Type: text/plain');
         $cfg = $config['providers'][$provider] ?? [];
+        $meta = $config['meta'] ?? [];
         $mask = function ($s) {
             $s = (string) $s;
             if ($s === '') return '';
@@ -30,6 +31,8 @@ try {
         echo "secret:     ".$mask($cfg['client_secret'] ?? '')."\n";
         echo "redirect:   ".($cfg['redirect_uri'] ?? '')."\n";
         echo "APP_URL:    ".(getenv('APP_URL') ?: ($_ENV['APP_URL'] ?? ''))."\n";
+        echo "ENV loader: ".($meta['env_loader'] ?? 'unknown')."\n";
+        echo "ENV path:   ".($meta['env_path'] ?? 'n/a')."\n";
         exit;
     }
     $manager = new Manager($config);

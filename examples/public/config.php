@@ -6,10 +6,14 @@ use Dotenv\Dotenv;
 
 $root = dirname(__DIR__, 2);
 
+// Track how env was loaded for debugging
+$__env_loader = 'none';
+
 // Best effort: load .env via phpdotenv if available; otherwise use a tiny fallback parser
 if (is_file($root . '/.env')) {
     if (class_exists(Dotenv::class)) {
         Dotenv::createImmutable($root)->safeLoad();
+        $__env_loader = 'phpdotenv';
     } else {
         // Fallback minimal loader (does not support all phpdotenv features)
         $lines = @file($root . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
@@ -22,6 +26,11 @@ if (is_file($root . '/.env')) {
                 continue;
             }
             [$k, $v] = array_map('trim', explode('=', $line, 2));
+            // Strip possible UTF-8 BOM from the first key
+            if (!isset($__bom_stripped)) {
+                $k = preg_replace('/^\xEF\xBB\xBF/', '', $k);
+                $__bom_stripped = true;
+            }
             $v = trim($v, "\"' ");
             // very basic expansion for ${VAR}
             $v = preg_replace_callback('/\$\{([A-Z0-9_]+)\}/i', function ($m) {
@@ -34,6 +43,7 @@ if (is_file($root . '/.env')) {
                 putenv($k.'='.$v);
             }
         }
+        $__env_loader = 'fallback';
     }
 }
 
@@ -51,5 +61,9 @@ return [
             'redirect_uri' => getenv('SOCIAL_GITHUB_REDIRECT_URI') ?: 'http://localhost:8000/callback.php?provider=github',
             // Optional: 'scopes' => ['read:user','user:email'],
         ],
+    ],
+    'meta' => [
+        'env_loader' => $__env_loader,
+        'env_path' => is_file($root . '/.env') ? ($root . '/.env') : null,
     ],
 ];

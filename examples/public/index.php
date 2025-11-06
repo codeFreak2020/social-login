@@ -23,8 +23,9 @@ declare(strict_types=1);
   <?php if (isset($_GET['debug'])): ?>
     <?php
       $cfgFile = __DIR__ . '/config.php';
-      $cfg = is_file($cfgFile) ? (require $cfgFile) : ['providers'=>[]];
+      $cfg = is_file($cfgFile) ? (require $cfgFile) : ['providers'=>[], 'meta'=>[]];
       $g = $cfg['providers']['google'] ?? [];
+      $meta = $cfg['meta'] ?? [];
       $mask = fn($s) => $s ? substr($s, 0, 6) . str_repeat('*', max(0, strlen($s)-10)) . substr($s, -4) : '';
     ?>
     <div style="margin-top:1.5rem;padding:1rem;border:1px solid #e5e7eb;border-radius:8px;background:#f9fafb;">
@@ -34,6 +35,8 @@ Google client_id: <?php echo htmlspecialchars($mask($g['client_id'] ?? '')); ?>
 Google secret:    <?php echo htmlspecialchars($mask($g['client_secret'] ?? '')); ?>
 Google redirect:  <?php echo htmlspecialchars((string)($g['redirect_uri'] ?? '')); ?>
 APP_URL:          <?php echo htmlspecialchars(getenv('APP_URL') ?: ($_ENV['APP_URL'] ?? '')); ?>
+ENV loader:       <?php echo htmlspecialchars((string)($meta['env_loader'] ?? 'unknown')); ?>
+ENV path:         <?php echo htmlspecialchars((string)($meta['env_path'] ?? 'n/a')); ?>
       </pre>
       <div class="note">If values look empty or wrong, ensure <code>.env</code> exists at project root and run <code>composer install</code> to load dev dependencies.</div>
     </div>
