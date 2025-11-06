@@ -17,6 +17,21 @@ if (!is_file($configFile)) {
 $config = require $configFile;
 
 try {
+    if (isset($_GET['debug'])) {
+        header('Content-Type: text/plain');
+        $cfg = $config['providers'][$provider] ?? [];
+        $mask = function ($s) {
+            $s = (string) $s;
+            if ($s === '') return '';
+            return substr($s, 0, 6) . str_repeat('*', max(0, strlen($s) - 10)) . substr($s, -4);
+        };
+        echo "Provider: $provider\n";
+        echo "client_id:  ".$mask($cfg['client_id'] ?? '')."\n";
+        echo "secret:     ".$mask($cfg['client_secret'] ?? '')."\n";
+        echo "redirect:   ".($cfg['redirect_uri'] ?? '')."\n";
+        echo "APP_URL:    ".(getenv('APP_URL') ?: ($_ENV['APP_URL'] ?? ''))."\n";
+        exit;
+    }
     $manager = new Manager($config);
     $driver = $manager->driver($provider);
     $authUrl = $driver->getAuthorizationUrl();
