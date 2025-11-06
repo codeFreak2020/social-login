@@ -20,5 +20,23 @@ declare(strict_types=1);
     <a class="btn" href="auth.php?provider=github">Continue with GitHub</a>
   </p>
   <p class="note">Copy <code>config.sample.php</code> to <code>config.php</code> and set your OAuth credentials before trying.</p>
+  <?php if (isset($_GET['debug'])): ?>
+    <?php
+      $cfgFile = __DIR__ . '/config.php';
+      $cfg = is_file($cfgFile) ? (require $cfgFile) : ['providers'=>[]];
+      $g = $cfg['providers']['google'] ?? [];
+      $mask = fn($s) => $s ? substr($s, 0, 6) . str_repeat('*', max(0, strlen($s)-10)) . substr($s, -4) : '';
+    ?>
+    <div style="margin-top:1.5rem;padding:1rem;border:1px solid #e5e7eb;border-radius:8px;background:#f9fafb;">
+      <strong>Debug: Loaded config (sanitized)</strong>
+      <pre style="white-space:pre-wrap;">
+Google client_id: <?php echo htmlspecialchars($mask($g['client_id'] ?? '')); ?>
+Google secret:    <?php echo htmlspecialchars($mask($g['client_secret'] ?? '')); ?>
+Google redirect:  <?php echo htmlspecialchars((string)($g['redirect_uri'] ?? '')); ?>
+APP_URL:          <?php echo htmlspecialchars(getenv('APP_URL') ?: ($_ENV['APP_URL'] ?? '')); ?>
+      </pre>
+      <div class="note">If values look empty or wrong, ensure <code>.env</code> exists at project root and run <code>composer install</code> to load dev dependencies.</div>
+    </div>
+  <?php endif; ?>
 </body>
 </html>

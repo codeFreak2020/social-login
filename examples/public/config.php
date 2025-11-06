@@ -5,8 +5,36 @@
 use Dotenv\Dotenv;
 
 $root = dirname(__DIR__, 2);
-if (is_file($root . '/.env') && class_exists(Dotenv::class)) {
-    Dotenv::createImmutable($root)->safeLoad();
+
+// Best effort: load .env via phpdotenv if available; otherwise use a tiny fallback parser
+if (is_file($root . '/.env')) {
+    if (class_exists(Dotenv::class)) {
+        Dotenv::createImmutable($root)->safeLoad();
+    } else {
+        // Fallback minimal loader (does not support all phpdotenv features)
+        $lines = @file($root . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
+        foreach ($lines as $line) {
+            if ($line === '' || str_starts_with(trim($line), '#')) {
+                continue;
+            }
+            // Support KEY=VALUE with optional quotes
+            if (!str_contains($line, '=')) {
+                continue;
+            }
+            [$k, $v] = array_map('trim', explode('=', $line, 2));
+            $v = trim($v, "\"' ");
+            // very basic expansion for ${VAR}
+            $v = preg_replace_callback('/\$\{([A-Z0-9_]+)\}/i', function ($m) {
+                $ref = $m[1];
+                return getenv($ref) ?: ($_ENV[$ref] ?? '');
+            }, $v);
+            $_ENV[$k] = $v;
+            $_SERVER[$k] = $v;
+            if (function_exists('putenv')) {
+                putenv($k.'='.$v);
+            }
+        }
+    }
 }
 
 return [
