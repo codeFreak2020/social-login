@@ -1,0 +1,1 @@
+{"version":2,"defects":[],"times":{"ManagerTest::test_it_builds_google_driver":0.019,"ManagerTest::test_it_builds_github_driver":0.001,"ManagerTest::test_missing_config_throws":0.001}}

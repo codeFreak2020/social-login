@@ -1,0 +1,33 @@
+{
+  "name": "acme/social-login",
+  "description": "Framework-agnostic social login package for PHP with multiple providers (Google, GitHub, Facebook, LinkedIn)",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "SocialLogin\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=8.0",
+    "league/oauth2-client": "^2.7",
+    "guzzlehttp/guzzle": "^7.8"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.5",
+    "illuminate/support": "^10.0 || ^11.0"
+  },
+  "scripts": {
+    "test": "phpunit --colors=always"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "SocialLogin\\Laravel\\SocialLoginServiceProvider"
+      ],
+      "aliases": {
+        "SocialLogin": "SocialLogin\\Laravel\\Facades\\SocialLogin"
+      }
+    }
+  }
+}
