@@ -4,6 +4,8 @@
 /composer.lock
 # PHPUnit cache
 /.phpunit.result.cache
+# Local environment (never commit secrets)
+.env
 # OS/editor junk
 .DS_Store
 Thumbs.db
