@@ -5,6 +5,7 @@ A tiny, framework-agnostic PHP library to handle OAuth2 social login with multip
 ## ✨ Features
 
 - 🔐 **6 Built-in Providers**: Google, GitHub, Facebook, LinkedIn, Microsoft, Twitter/X
+- 🏢 **Custom OAuth2 Support**: Use your own OAuth2 server as a provider
 - 🔌 **Fully Extensible**: Add any OAuth2 provider in minutes
 - 🚀 **Framework-agnostic**: Works with any PHP application
 - 💎 **Laravel Support**: Auto-discovery, Facade, publishable config
@@ -234,6 +235,51 @@ class DiscordProvider extends AbstractOAuth2Provider
 ```
 
 **📖 Full Guide**: See [EXTENDING.md](EXTENDING.md) for complete documentation, real-world examples (Slack, Apple, Discord), and testing strategies.
+
+## Using Your Own OAuth2 Server
+
+You can use this package with **your own custom OAuth2 authentication server** - perfect for enterprise SSO, multi-tenant applications, or custom authentication services.
+
+### Quick Example
+
+```php
+use SocialLogin\Providers\GenericOAuth2Provider;
+
+$config = [
+    'providers' => [
+        'my-auth-service' => [
+            'driver' => GenericOAuth2Provider::class,
+            'client_id' => 'your_client_id',
+            'client_secret' => 'your_client_secret',
+            'redirect_uri' => 'https://your-app.com/auth/callback',
+            
+            // Your OAuth2 server endpoints
+            'authorize_url' => 'https://auth.yourcompany.com/oauth/authorize',
+            'token_url' => 'https://auth.yourcompany.com/oauth/token',
+            'userinfo_url' => 'https://auth.yourcompany.com/api/user',
+            
+            'scopes' => ['openid', 'profile', 'email'],
+        ],
+    ],
+];
+
+$manager = new Manager($config);
+$driver = $manager->driver('my-auth-service');
+```
+
+### Works With Popular OAuth2 Servers
+
+- **Laravel Passport** - Full OAuth2 server for Laravel apps
+- **Keycloak** - Open-source identity and access management
+- **Auth0** - Authentication and authorization platform
+- **Your Custom Server** - Any OAuth2-compliant server
+
+**📖 Complete Guide**: See [CUSTOM_OAUTH2.md](CUSTOM_OAUTH2.md) for:
+- Building your own OAuth2 server
+- Complete configuration options
+- Field mapping and customization
+- Laravel Passport, Keycloak, and Auth0 examples
+- Security best practices
 
 ## More Providers
 
